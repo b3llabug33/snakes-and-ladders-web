@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Snakes and Ladders</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="app">
+    <h1>Snakes and Ladders</h1>
+
+    <!-- mode select -->
+    <div id="modeScreen" class="panel">
+      <p>choose a game mode</p>
+      <button id="pvpBtn">player vs player</button>
+      <button id="pvbBtn">player vs bot</button>
+    </div>
+
+    <!-- game -->
+    <div id="gameScreen" class="panel hidden">
+      <div id="status">player 1's turn — press roll</div>
+
+      <div id="board"></div>
+
+      <div id="controls">
+        <button id="rollBtn">roll</button>
+        <button id="restartBtn" class="hidden">play again</button>
+      </div>
+
+      <div class="legend">
+        <span><span class="swatch p1"></span> player 1</span>
+        <span><span class="swatch p2"></span> player 2</span>
+        <span><span class="swatch ladder"></span> ladder (bottom → top)</span>
+        <span><span class="swatch snake"></span> snake (head → tail)</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
