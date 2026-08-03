@@ -44,68 +44,49 @@ function switchPlayer() {
   currentPlayer = currentPlayer === 1 ? 2 : 1;
 }
 
-// ---- board rendering ----
+// ---- board rendering, ported straight from GameConsoleUI.printBoard ----
 const boardEl = document.getElementById("board");
-const cells = {}; // square number -> cell element
 
-function buildBoard() {
-  boardEl.innerHTML = "";
-
+function renderBoard() {
   // label the ladder/snake squares the same way GameConsoleUI.printBoard does
   const labels = {};
   let i = 1;
   for (const bottom in ladders) {
     const top = ladders[bottom];
-    labels[bottom] = { text: "L" + i, cls: "ladder-bottom" };
-    labels[top] = { text: "H" + i, cls: "ladder-top" };
+    labels[bottom] = "L" + i;
+    labels[top] = "H" + i;
     i++;
   }
   let j = 1;
   for (const head in snakes) {
     const tail = snakes[head];
-    labels[head] = { text: "S" + j, cls: "snake-head" };
-    labels[tail] = { text: "T" + j, cls: "snake-tail" };
+    labels[head] = "S" + j;
+    labels[tail] = "T" + j;
     j++;
   }
 
+  let out = "";
   for (let row = 0; row < 10; row++) {
+    let line = "";
     for (let col = 0; col < 10; col++) {
       const square = (9 - row) * 10 + col + 1;
-      const cell = document.createElement("div");
-      cell.className = "cell";
-
-      const num = document.createElement("span");
-      num.className = "num";
-      num.textContent = square;
-      cell.appendChild(num);
-
-      if (labels[square]) {
-        cell.classList.add(labels[square].cls);
-        const label = document.createElement("span");
-        label.className = "label";
-        label.textContent = labels[square].text;
-        cell.appendChild(label);
+      let text;
+      if (square === p1Position && square === p2Position) {
+        text = "p1p2";
+      } else if (square === p1Position) {
+        text = "p1";
+      } else if (square === p2Position) {
+        text = "p2";
+      } else if (labels[square]) {
+        text = labels[square];
+      } else {
+        text = String(square);
       }
-
-      boardEl.appendChild(cell);
-      cells[square] = cell;
+      line += "|" + text.padStart(4); // keep everything lined up, same as String.format("%4s", text)
     }
+    out += line + "|\n";
   }
-}
-
-function renderPlayers() {
-  document.querySelectorAll(".token").forEach((t) => t.remove());
-
-  if (p1Position >= 1) {
-    const t = document.createElement("div");
-    t.className = "token p1";
-    cells[p1Position].appendChild(t);
-  }
-  if (p2Position >= 1) {
-    const t = document.createElement("div");
-    t.className = "token p2";
-    cells[p2Position].appendChild(t);
-  }
+  boardEl.textContent = out;
 }
 
 // ---- screens ----
@@ -134,8 +115,7 @@ function startGame(vsBot) {
   restartBtn.classList.add("hidden");
   rollBtn.disabled = false;
 
-  buildBoard();
-  renderPlayers();
+  renderBoard();
   updateStatus();
 }
 
@@ -155,7 +135,7 @@ function takeTurn() {
 
   const r = roll();
   movePlayer(r);
-  renderPlayers();
+  renderBoard();
 
   const player = currentPlayer;
   statusEl.textContent = `player ${player} rolled a ${r} — now on square ${getPlayerLocation(player)}`;
